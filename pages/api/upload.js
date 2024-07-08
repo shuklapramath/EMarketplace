@@ -1,6 +1,9 @@
 import multiparty from 'multiparty';
 import { S3Client } from '@aws-sdk/client-s3';
 import { PutObjectCommand} from '@aws-sdk/client-s3';
+import mime from 'mime-types';
+import fs from 'fs';
+const bucketName = 'pramath-ecommerce';
 
 export default async function handle(req, res){
     const form = new multiparty.Form();
@@ -18,10 +21,21 @@ export default async function handle(req, res){
             secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
         },
     });
-    client.send(new PutObjectCommand({
-
-    }));
-    return res.json('ok');
+    const links = [];
+    for (const file of files.file){
+        const ext = file.originalFilename.split('.').pop();
+        const newFilename = Date.now() + '.' + ext;
+        await client.send(new PutObjectCommand({
+            Bucket: bucketName,
+            Key: newFilename,
+            Body: fs.readFileSync(file.path),
+            ACL: 'public-read',
+            ContentType: mime.lookup(file.path),
+        }));
+        const link = `https://${bucketName}.s3.amazonaws.com/${newFilename}`;
+        links.push(link);
+    }
+    return res.json({links});
 }
 
 export const config = {

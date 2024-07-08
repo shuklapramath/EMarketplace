@@ -13,6 +13,7 @@
     "@aws-sdk/client-s3": "^3.609.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
+    "mime-types": "^2.1.35",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
     "mongose": "^0.0.2-security",
@@ -22,6 +23,7 @@
     "postcss": "^8.4.38",
     "react": "^18",
     "react-dom": "^18",
+    "react-spinners": "^0.14.1",
     "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
