@@ -10,6 +10,7 @@ function Categories({swal}){
     const [name, setName] = useState('');
     const [parentCategory, setParentCategory] = useState('');
     const [categories, setCategories] = useState([]);
+    const [properties, setProperties] = useState([]);
     useEffect(() => {
         fetchCategories();
     }, [])
@@ -53,6 +54,25 @@ function Categories({swal}){
             }
         });
     }
+    function addProperty(){
+        setProperties(prev => {
+            return [...prev, {name:'',values:''}];
+        });
+    }
+    function handlePropertyNameChange(index,property, newName){
+        setProperties(prev => {
+            const properties = [...prev];
+            properties[index].name = newName;
+            return properties;
+        });
+    }
+    function handlePropertyValuesChange(index,property, newValues){
+        setProperties(prev => {
+            const properties = [...prev];
+            properties[index].values = newValues;
+            return properties;
+        });
+    }
     return(
         <Layout>
             <h1>Categories</h1>
@@ -61,23 +81,46 @@ function Categories({swal}){
                     ? `Edit category ${editedCategory.name}` : 
                     'Create new category'}
             </label>
-            <form onSubmit={saveCategory} className="flex gap-1">
-                <input className="mb-0" 
-                type="text" 
-                placeholder={'Category name'}
-                onChange={ev => setName(ev.target.value)}
-                value={name}/>
-                <select className="mb-0" 
-                        onChange={ev => setParentCategory(ev.target.value)}
-                        value={parentCategory}>
-                    <option value = ""> No parent Category</option>
-                    {categories.length > 0 && categories.map
-                        (category => (
-                            <option value={category._id}>{category.name}</option>
-                        ))
-                    }
-                </select>
-                <button type = "submit" className="btn-primary py-1">Save</button>
+            <form onSubmit={saveCategory}>
+                <div className="flex gap-1">
+                    <input type="text" 
+                    placeholder={'Category name'}
+                    onChange={ev => setName(ev.target.value)}
+                    value={name}/>
+                    <select 
+                            onChange={ev => setParentCategory(ev.target.value)}
+                            value={parentCategory}>
+                        <option value = ""> No parent Category</option>
+                        {categories.length > 0 && categories.map
+                            (category => (
+                                <option value={category._id}>{category.name}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+                <div className="mb-2">
+                    <label className="block">Properties</label>
+                    <button 
+                        onClick={addProperty}
+                        type="button" 
+                        className="btn-default text-sm">Add new property</button>
+                        {properties.length > 0 && properties.map((property, index) => (
+                            <div className="flex gap-1">
+                                <input 
+                                    type="text" 
+                                    value={property.name} 
+                                    onChange={ev => handlePropertyNameChange(index,property, ev.target.value)}
+                                    placeholder="property name (example:color)"/>
+                                <input 
+                                    type="text" 
+                                    onChange={ev => handlePropertyValuesChange(index,property,ev.target.value)}
+                                    value={property.values} 
+                                    placeholder="values, comma seperted"/>
+                            </div>
+                        ))}
+                </div>
+                <button type = "submit" 
+                        className="btn-primary py-1">Save</button>
             </form>
             <table className="basic mt-4">
                 <thead>
