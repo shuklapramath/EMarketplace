@@ -59,6 +59,17 @@ export default function ProductForm({
     function updateImagesOrder(images){
         setImages(images);
     }
+
+    const propertiesToFill = [];
+    if (categories.length > 0 && category) {
+        const selCatInfo = categories.find(({_id}) => _id === category);
+        propertiesToFill.push(...selCatInfo.properties);
+        while(selCatInfo.parent?._id){
+            const parentCat = categories.find(({_id}) => _id === selCatInfo.parent?._id);
+            propertiesToFill.push(parentCat.properties);
+        }
+    }
+
     return(
             <form onSubmit={saveProduct}>
                 <label>Product name</label>
@@ -75,6 +86,9 @@ export default function ProductForm({
                     <option value = {c._id}>{c.name}</option>
                    ))}
                 </select>
+                {propertiesToFill.length > 0 && propertiesToFill.map(p => (
+                    <div>{p.name}</div>
+                ))}
                 <label>
                     Photos
                 </label>
