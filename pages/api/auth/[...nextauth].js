@@ -1,4 +1,4 @@
-import client from "@/lib/mongodb";
+import clientPromise from "@/lib/mongodb";
 //import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import {MongoDBAdapter} from "@auth/mongodb-adapter";
 import NextAuth, {getServerSession} from 'next-auth';
@@ -14,7 +14,7 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_SECRET
     }), 
   ],
-  adapter: MongoDBAdapter(client),
+  adapter: MongoDBAdapter(clientPromise),
   callbacks: {
     session: ({session,token,user}) => {
       if (adminEmails.includes(session?.user?.email)){
